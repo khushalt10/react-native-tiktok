@@ -1,12 +1,14 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import Post from '../../components/Post'
 
 export default function Home() {
     return (
         <View>
-            <Text>Home Screen</Text> 
+            <Post />
         </View>
     )
 }
 
 const styles = StyleSheet.create({})
+   
