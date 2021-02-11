@@ -1,22 +1,33 @@
 import React, { useState } from 'react'
-import { Dimensions, Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import Video from 'react-native-video'
 import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 
-export default function Post () {
+export default function Post (props) {
 
     const [paused, setPaused] = useState(false)
+    const [post, setPost] = useState(props.post)
+    const [isLiked, setIsLiked] = useState(false)
     const onPlayPause = () => {
         setPaused(!paused)
     }
 
+    const onLikePress = () => {
+        const liksToAdd = isLiked ? -1 : 1;
+        setPost({
+            ...post,
+            likes: post.likes + liksToAdd
+        })
+        setIsLiked(!isLiked)
+    }
+
     return (
         <View style={styles.container}>
-            <TouchableWithoutFeedback onPress={onPlayPause}>
+            <TouchableWithoutFeedback onPress={onPlayPause} >
                 <Video 
-                    source={{ uri: "https://player.vimeo.com/external/418966971.sd.mp4?s=c296b90fbcd612daeb52447ef814b6ac87e45f98&profile_id=165&oauth2_token_id=57447761"}}
+                    source={{ uri: post.videoUri}}
                     style={styles.vid}
                     resizeMode={'cover'}
                     onError={(e) => console.log(e)}
@@ -27,36 +38,36 @@ export default function Post () {
 
             <View style={styles.info}>
                 <View style={styles.right}>
-                        <Image style={styles.profilePicture} source={{uri: 'https://amazing-brown-d808cb.netlify.app/images/sea.jpg'}} />
+                        <Image style={styles.profilePicture} source={{uri: post.user.imageUri}} />
                 
-                        <View style={styles.iconContainer}>
-                            <Entypo name={'heart'} size={40} color={"white"} />
-                            <Text style={styles.statsLabel}>23</Text>
-                        </View>
+                        <TouchableOpacity onPress={onLikePress} style={styles.iconContainer}>
+                            <Entypo name={'heart'} size={40} color={isLiked ? "red" : "white"} />
+                            <Text style={styles.statsLabel}>{post.likes}</Text>
+                        </TouchableOpacity>
 
                         <View style={styles.iconContainer}>
                             <FontAwesome name={'commenting'} size={40} color={"white"} />
-                            <Text style={styles.statsLabel}>23</Text>
+                            <Text style={styles.statsLabel}>{post.comments}</Text>
                         </View>
 
                         <View style={styles.iconContainer}>
                             <Fontisto name={'share-a'} size={33} color={"white"} />
-                            <Text style={styles.statsLabel}>23</Text>
+                            <Text style={styles.statsLabel}>{post.shares}</Text>
                         </View>
                 </View>
 
                 <View style={styles.bottom}>
                     <View>
-                        <Text style={styles.handle}>@_khussshal_✔</Text>
-                        <Text style={styles.description}>YEah, that's the stuff!</Text>
+                        <Text style={styles.handle}>@{post.user.username}✔</Text>
+                        <Text style={styles.description}>{post.description}</Text>
 
                         <View style={styles.songRow}>
                             <Entypo name={'beamed-note'} size={24} color={"white"} />
-                            <Text style={styles.songName}>Bohemian Rhapsody - Queens</Text>
+                            <Text style={styles.songName}>{post.song}</Text>
                         </View>
                     </View>
 
-                    <Image style={styles.songImage} source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDf-d5TohDKH-ax8NYZAO5IsFGaU4AOutSLQ&usqp=CAU"}} />
+                    <Image style={styles.songImage} source={{ uri: post.songImage}} />
                 </View>
             </View>
         </View>
