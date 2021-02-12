@@ -1,27 +1,46 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native'
 import Post from '../../components/Post'
-
-const post = {
-    id: 'p1',
-    videoUri: 'https://player.vimeo.com/external/418966971.sd.mp4?s=c296b90fbcd612daeb52447ef814b6ac87e45f98&profile_id=165&oauth2_token_id=57447761',
-    user: {
-        id: 'u1',
-        username: '_khussshal_',
-        imageUri: 'https://amazing-brown-d808cb.netlify.app/images/sea.jpg'
-    },
-    description: 'YEah that\'s the stuff',
-    song: 'Bohemian Rhapsody - Queen',
-    songImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDf-d5TohDKH-ax8NYZAO5IsFGaU4AOutSLQ&usqp=CAU',
-    likes: 123,
-    comments: 123,
-    shares: 12
-}
+import posts from '../../../data/posts'
+import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
 
 export default function Home() {
-    return (
-        <View>
+
+    let { width } = Dimensions.get("window");
+    let { height } = Dimensions.get("window");
+    const dataProviderMaker = (data) => (new DataProvider((r1, r2) => r1 !== r2)).cloneWithRows(data)
+    const [dataProvider, setDataProvider] = useState(dataProviderMaker(posts))
+    
+    useEffect(() => {
+        setDataProvider(dataProviderMaker(posts))
+      }, [posts])
+
+    const layoutProvider = new LayoutProvider(() => 0
+    , (type, dim) => {
+                dim.width = width;
+                dim.height = height;
+    })
+    
+    const rowRenderer = (type, post) => {
+        const { user, song, songName, likes, description} = post;
+        return(
             <Post post={post} />
+        )
+    }
+
+    return (
+        <View style={{minHeight: height, minWidth: width, flex: 1, flexDirection: 'column', }}>
+            <RecyclerListView 
+                // style={{flex: 1}}
+                rowRenderer={rowRenderer}
+                dataProvider={dataProvider}
+                layoutProvider={layoutProvider}
+                scrollViewProps={{
+                    showsVerticalScrollIndicator: false,
+                    snapToInterval: height,
+                    snapToAlignment: 'start',
+                }}
+            />
         </View>
     )
 }
