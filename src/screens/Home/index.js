@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, FlatList, Image, StyleSheet, Text, View } from 'react-native'
 import Post from '../../components/Post'
 import posts from '../../../data/posts'
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
@@ -23,11 +23,12 @@ export default function Home() {
                     data: { "page": 0 }
                   });
         
-                console.log(res.data)
+               
                 setVideos(res.data)
             }
             fetchData()
             setDataProvider(dataProviderMaker(videos))
+
       }, [])
     const dataProviderMaker = (data) => (new DataProvider((r1, r2) => r1 !== r2)).cloneWithRows(data)
     const [dataProvider, setDataProvider] = useState(dataProviderMaker(videos))
@@ -51,9 +52,9 @@ export default function Home() {
     }
 
     return (<>
-        {videos ? (
+        
             <View style={{minHeight: height, minWidth: width, flex: 1, flexDirection: 'column', }}>
-            <RecyclerListView 
+            {videos.length ? ( <RecyclerListView 
                 style={{flex: 1, minHeight: height, minWidth: width,}}
                 layoutProvider={layoutProvider}
                 dataProvider={dataProvider}
@@ -63,9 +64,10 @@ export default function Home() {
                     snapToInterval: height,
                     snapToAlignment: 'start',
                 }}
-            />
-        </View>
-        ): (<View></View>)}
+            /> ): (<View><Text>....Loading</Text></View>)
+          
+}</View>
+       
         </>
         
     )

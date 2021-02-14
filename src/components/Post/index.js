@@ -15,26 +15,26 @@ export default function Post (props) {
     const onPlayPause = () => {
         setPaused(!paused)
     }
-    const Axios = axios.create({
-        baseURL: "https://europe-west1-boom-dev-7ad08.cloudfunctions.net/videoFeed",
-    });
-    useEffect(() => {
-        // setDataProvider(dataProviderMaker(posts))
+    // const Axios = axios.create({
+    //     baseURL: "https://europe-west1-boom-dev-7ad08.cloudfunctions.net/videoFeed",
+    // });
+    // useEffect(() => {
+    //     // setDataProvider(dataProviderMaker(posts))
         
-            const fetchData = async () => {
-                const res = await Axios({
-                    method: 'post',
-                    url: '/',
-                    data: { "page": 0 }
-                  });
+    //         const fetchData = async () => {
+    //             const res = await Axios({
+    //                 method: 'post',
+    //                 url: '/',
+    //                 data: { "page": 0 }
+    //               });
         
-                console.log(res.data)
-                setVideos(res.data)
+            
+    //             setVideos(res.data)
                 
-            }
-        fetchData()
-        console.log(videos)
-      }, [])
+    //         }
+    //     fetchData()
+    
+    //   }, [])
 
     const onLikePress = () => {
         // const liksToAdd = isLiked ? -1 : 1;
@@ -44,7 +44,7 @@ export default function Post (props) {
         // })
         setIsLiked(!isLiked)
     }
-    console.log(props.video)
+ 
 
     return (
         <>
