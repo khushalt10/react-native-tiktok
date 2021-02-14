@@ -3,38 +3,61 @@ import { Dimensions, Image, StyleSheet, Text, View } from 'react-native'
 import Post from '../../components/Post'
 import posts from '../../../data/posts'
 import { RecyclerListView, DataProvider, LayoutProvider } from "recyclerlistview";
+import axios from 'axios'
 
 export default function Home() {
 
     let { width } = Dimensions.get("window");
     let { height } = Dimensions.get("window");
-    const dataProviderMaker = (data) => (new DataProvider((r1, r2) => r1 !== r2)).cloneWithRows(data)
-    const [dataProvider, setDataProvider] = useState(dataProviderMaker(posts))
+    const [videos, setVideos] = useState([]);
+    const Axios = axios.create({
+        baseURL: "https://europe-west1-boom-dev-7ad08.cloudfunctions.net/videoFeed",
+    });
     
     useEffect(() => {
-        setDataProvider(dataProviderMaker(posts))
-      }, [posts])
+         
+            const fetchData = async () => {
+                const res = await Axios({
+                    method: 'post',
+                    url: '/',
+                    data: { "page": 0 }
+                  });
+        
+                console.log(res.data)
+                setVideos(res.data)
+            }
+            fetchData()
+            setDataProvider(dataProviderMaker(videos))
+      }, [])
+    const dataProviderMaker = (data) => (new DataProvider((r1, r2) => r1 !== r2)).cloneWithRows(data)
+    const [dataProvider, setDataProvider] = useState(dataProviderMaker(videos))
+    
+      const ViewTypes = {
+          Full: 1
+      }
 
-    const layoutProvider = new LayoutProvider(() => 0
-    , (type, dim) => {
-                dim.width = width;
-                dim.height = height;
+    const layoutProvider = new LayoutProvider(() => 1,
+    (type, dim) => {
+                    dim.width = width;
+                    dim.height = height;
+        
     })
     
-    const rowRenderer = (type, post) => {
-        const { user, song, songName, likes, description} = post;
+    const rowRenderer = (type, video) => {
+ 
         return(
-            <Post post={post} />
+            <Post video={video} />
         )
     }
 
-    return (
-        <View style={{minHeight: height, minWidth: width, flex: 1, flexDirection: 'column', }}>
+    return (<>
+        {videos ? (
+            <View style={{minHeight: height, minWidth: width, flex: 1, flexDirection: 'column', }}>
             <RecyclerListView 
-                // style={{flex: 1}}
-                rowRenderer={rowRenderer}
-                dataProvider={dataProvider}
+                style={{flex: 1, minHeight: height, minWidth: width,}}
                 layoutProvider={layoutProvider}
+                dataProvider={dataProvider}
+                rowRenderer={rowRenderer}
                 scrollViewProps={{
                     showsVerticalScrollIndicator: false,
                     snapToInterval: height,
@@ -42,6 +65,9 @@ export default function Home() {
                 }}
             />
         </View>
+        ): (<View></View>)}
+        </>
+        
     )
 }
 

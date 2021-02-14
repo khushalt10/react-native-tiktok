@@ -1,33 +1,59 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import Video from 'react-native-video'
 import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Fontisto from 'react-native-vector-icons/Fontisto'
+import axios from 'axios'
 
 export default function Post (props) {
 
     const [paused, setPaused] = useState(false)
-    const [post, setPost] = useState(props.post)
+    // const [post, setPost] = useState(props.post)
     const [isLiked, setIsLiked] = useState(false)
+    const [videos, setVideos] = useState([]);
     const onPlayPause = () => {
         setPaused(!paused)
     }
+    const Axios = axios.create({
+        baseURL: "https://europe-west1-boom-dev-7ad08.cloudfunctions.net/videoFeed",
+    });
+    useEffect(() => {
+        // setDataProvider(dataProviderMaker(posts))
+        
+            const fetchData = async () => {
+                const res = await Axios({
+                    method: 'post',
+                    url: '/',
+                    data: { "page": 0 }
+                  });
+        
+                console.log(res.data)
+                setVideos(res.data)
+                
+            }
+        fetchData()
+        console.log(videos)
+      }, [])
 
     const onLikePress = () => {
-        const liksToAdd = isLiked ? -1 : 1;
-        setPost({
-            ...post,
-            likes: post.likes + liksToAdd
-        })
+        // const liksToAdd = isLiked ? -1 : 1;
+        // setPost({
+        //     ...post,
+        //     likes: post.likes + liksToAdd
+        // })
         setIsLiked(!isLiked)
     }
+    console.log(props.video)
 
     return (
+        <>
+        {props.video ? (
         <View style={styles.container}>
             <TouchableWithoutFeedback onPress={onPlayPause} >
+              
                 <Video 
-                    source={{ uri: post.videoUri}}
+                    source={{ uri: props.video.playbackUrl}}
                     style={styles.vid}
                     resizeMode={'cover'}
                     onError={(e) => console.log(e)}
@@ -38,39 +64,42 @@ export default function Post (props) {
 
             <View style={styles.info}>
                 <View style={styles.right}>
-                        <Image style={styles.profilePicture} source={{uri: post.user.imageUri}} />
+                        <Image style={styles.profilePicture} source={{uri: 'https://amazing-brown-d808cb.netlify.app/images/sea.jpg'}} />
                 
                         <TouchableOpacity onPress={onLikePress} style={styles.iconContainer}>
                             <Entypo name={'heart'} size={40} color={isLiked ? "red" : "white"} />
-                            <Text style={styles.statsLabel}>{post.likes}</Text>
+                            <Text style={styles.statsLabel}>123</Text>
                         </TouchableOpacity>
 
                         <View style={styles.iconContainer}>
                             <FontAwesome name={'commenting'} size={40} color={"white"} />
-                            <Text style={styles.statsLabel}>{post.comments}</Text>
+                            <Text style={styles.statsLabel}>112</Text>
                         </View>
 
                         <View style={styles.iconContainer}>
                             <Fontisto name={'share-a'} size={33} color={"white"} />
-                            <Text style={styles.statsLabel}>{post.shares}</Text>
+                            <Text style={styles.statsLabel}>12</Text>
                         </View>
                 </View>
 
                 <View style={styles.bottom}>
                     <View>
-                        <Text style={styles.handle}>@{post.user.username}✔</Text>
-                        <Text style={styles.description}>{post.description}</Text>
+                        <Text style={styles.handle}>@_khussshal_✔</Text>
+                        <Text style={styles.description}>YEah that's the stuff</Text>
 
                         <View style={styles.songRow}>
                             <Entypo name={'beamed-note'} size={24} color={"white"} />
-                            <Text style={styles.songName}>{post.song}</Text>
+                            <Text style={styles.songName}>Cardigan - Taylor Swift</Text>
                         </View>
                     </View>
 
-                    <Image style={styles.songImage} source={{ uri: post.songImage}} />
+                    <Image style={styles.songImage} source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRAlfohLWJgqES6PoqdkhSOpLgAEwxpglNTA&usqp=CAU'}} />
                 </View>
             </View>
         </View>
+
+        ): (<View></View>)}
+        </>
     )
 }
 
