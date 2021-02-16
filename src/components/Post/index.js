@@ -15,27 +15,7 @@ export default function Post (props) {
     const onPlayPause = () => {
         setPaused(!paused)
     }
-    // const Axios = axios.create({
-    //     baseURL: "https://europe-west1-boom-dev-7ad08.cloudfunctions.net/videoFeed",
-    // });
-    // useEffect(() => {
-    //     // setDataProvider(dataProviderMaker(posts))
-        
-    //         const fetchData = async () => {
-    //             const res = await Axios({
-    //                 method: 'post',
-    //                 url: '/',
-    //                 data: { "page": 0 }
-    //               });
-        
-            
-    //             setVideos(res.data)
-                
-    //         }
-    //     fetchData()
     
-    //   }, [])
-
     const onLikePress = () => {
         // const liksToAdd = isLiked ? -1 : 1;
         // setPost({
@@ -48,12 +28,12 @@ export default function Post (props) {
 
     return (
         <>
-        {props.video ? (
+        {props.post ? (
         <View style={styles.container}>
             <TouchableWithoutFeedback onPress={onPlayPause} >
               
                 <Video 
-                    source={{ uri: props.video.playbackUrl}}
+                    source={{ uri: props.post.videoUri}}
                     style={styles.vid}
                     resizeMode={'cover'}
                     onError={(e) => console.log(e)}
