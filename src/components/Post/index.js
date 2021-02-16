@@ -28,12 +28,12 @@ export default function Post (props) {
 
     return (
         <>
-        {props.post ? (
+        {props.video ? (
         <View style={styles.container}>
             <TouchableWithoutFeedback onPress={onPlayPause} >
               
                 <Video 
-                    source={{ uri: props.post.videoUri}}
+                    source={{ uri: props.video.playbackUrl}}
                     style={styles.vid}
                     resizeMode={'cover'}
                     onError={(e) => console.log(e)}
